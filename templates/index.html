@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Message Scam Detector</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="language-selector">
+        <label for="languageSelect">Secondary language:</label>
+
+        <select id="languageSelect">
+            <option value="">English only</option>
+            <option value="Malayalam">Malayalam</option>
+            <option value="Hindi">Hindi</option>
+            <option value="Tamil">Tamil</option>
+        </select>
+        </div>
+
+        <h1>🛡️ScamEye</h1>
+        <h1>[Message Scam Detector]</h1>
+
+        <p class="subtitle">
+            Check a suspicious message before you click, reply, or pay.
+        </p>
+
+        <textarea
+            id = "messageInput"
+            placeholder="Paste your suspicious message here..."
+        ></textarea>
+
+        <button id="checkButton">Check Message</button>
+        
+        <div id="result"></div>
+        
+        <p class="or-text">OR</p>
+
+        <input id="imageInput" type="file" accept="image/*">
+
+    </div>
+
+    <script src="/static/script.js"></script>
+
+</body>
+</html>
