@@ -13,7 +13,7 @@ document.getElementById("checkButton").onclick = async function () {
     result.textContent = "Checking message...";
 
     try {
-        const response = await fetch("http://127.0.0.1:5000/analyze", {
+        const response = await fetch("/analyze", {
             method: "POST",
 
             headers: {
@@ -108,7 +108,7 @@ imageInput.onchange = async function () {
     formData.append("image", image);
 
     try {
-        const response = await fetch("http://127.0.0.1:5000/scan-image", {
+        const response = await fetch("/scan-image", {
             method: "POST",
             body: formData
         });
