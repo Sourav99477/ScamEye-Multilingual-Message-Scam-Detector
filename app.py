@@ -86,7 +86,7 @@ MESSAGE:
 """
 
     response = client.models.generate_content(
-    model="gemini-2.5-flash",
+    model="gemini-3.1-flash-lite",
     contents=prompt,
     config=types.GenerateContentConfig(
         response_mime_type="application/json"
@@ -114,7 +114,7 @@ def scan_image():
     image_bytes = image.read()
 
     response = client.models.generate_content(
-        model="gemini-2.5-flash",
+        model="gemini-3.1-flash-lite",
         contents=[
             types.Part.from_bytes(
                 data=image_bytes,
