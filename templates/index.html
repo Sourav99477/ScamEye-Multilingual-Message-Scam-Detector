@@ -1,120 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ScamEye checks suspicious messages for scam and social-engineering warning signs.">
-    <title>ScamEye — Message Safety Scanner</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ScamEye checks suspicious messages for scam and social-engineering warning signs.">
+  <title>ScamEye — Message Safety Scanner</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <div class="ambient ambient-one"></div>
-    <div class="ambient ambient-two"></div>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <main class="shell">
+    <header class="topbar"><a class="brand" href="/" aria-label="ScamEye home"><span class="brand-mark" aria-hidden="true">⬡</span><span>Scam<span class="brand-accent">Eye</span></span></a><div class="topbar-right"><span class="topbar-badge"><span class="status-dot"></span> AI safety scanner</span><button id="logoutButton" class="text-button" hidden>Sign out</button></div></header>
 
-    <main class="shell">
-        <header class="topbar">
-            <a class="brand" href="/" aria-label="ScamEye home">
-                <span class="brand-mark" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 20 6v5.8c0 4.6-3.1 7.8-8 9.2-4.9-1.4-8-4.6-8-9.2V6l8-3Z" stroke="currentColor" stroke-width="1.7"/><path d="m8.8 12 2.1 2.1 4.5-4.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </span>
-                <span>Scam<span class="brand-accent">Eye</span></span>
-            </a>
-            <div class="topbar-badge"><span class="status-dot"></span> AI safety scanner</div>
-        </header>
+    <section id="authView" class="auth-layout">
+      <div class="hero auth-hero"><div class="eyebrow">✦ Pause. Check. Protect.</div><h1>Don't let a convincing message <span>rush you into a mistake.</span></h1><p>Analyze suspicious texts and screenshots for phishing, impersonation, payment requests, and other social-engineering warning signs.</p><div class="trust-note">🔒 Your account protects access to your private scan history.</div></div>
+      <section class="auth-card" aria-label="Account access">
+        <div class="auth-tabs"><button id="showSignIn" class="auth-tab active" type="button">Sign in</button><button id="showSignUp" class="auth-tab" type="button">Create account</button></div>
+        <div id="authNotice" class="notice" role="status" aria-live="polite" hidden></div>
+        <form id="signInForm" class="auth-form"><h2>Welcome back</h2><p class="muted">Sign in to continue to ScamEye.</p><label for="signInEmail">Email address</label><input id="signInEmail" type="email" autocomplete="email" required placeholder="you@example.com"><label for="signInPassword">Password</label><input id="signInPassword" type="password" autocomplete="current-password" required minlength="8" placeholder="Your password"><button class="analyze-button" type="submit">Sign in <span class="button-arrow">→</span></button><button id="forgotPasswordButton" class="link-button" type="button">Forgot password?</button></form>
+        <form id="signUpForm" class="auth-form" hidden><h2>Create your account</h2><p class="muted">We'll email you a verification link.</p><label for="signUpName">Display name <span class="optional">(optional)</span></label><input id="signUpName" type="text" autocomplete="name" maxlength="80" placeholder="Your name"><label for="signUpEmail">Email address</label><input id="signUpEmail" type="email" autocomplete="email" required placeholder="you@example.com"><label for="signUpPassword">Password</label><input id="signUpPassword" type="password" autocomplete="new-password" required minlength="8" placeholder="At least 8 characters"><label for="signUpConfirm">Confirm password</label><input id="signUpConfirm" type="password" autocomplete="new-password" required minlength="8" placeholder="Enter password again"><button class="analyze-button" type="submit">Create account <span class="button-arrow">→</span></button><p class="fine-print">By creating an account, you agree not to submit information you are not authorized to share.</p></form>
+        <form id="forgotForm" class="auth-form" hidden><h2>Reset your password</h2><p class="muted">We'll send a password reset link to your email.</p><label for="forgotEmail">Email address</label><input id="forgotEmail" type="email" autocomplete="email" required placeholder="you@example.com"><button class="analyze-button" type="submit">Send reset link <span class="button-arrow">→</span></button><button id="backToSignIn" class="link-button" type="button">Back to sign in</button></form>
+        <form id="resetForm" class="auth-form" hidden><h2>Choose a new password</h2><p class="muted">Use a strong password you don't use elsewhere.</p><label for="newPassword">New password</label><input id="newPassword" type="password" autocomplete="new-password" required minlength="8"><label for="confirmNewPassword">Confirm new password</label><input id="confirmNewPassword" type="password" autocomplete="new-password" required minlength="8"><button class="analyze-button" type="submit">Update password <span class="button-arrow">→</span></button></form>
+      </section>
+    </section>
 
-        <section class="hero">
-            <div class="eyebrow"><span>✦</span> Pause. Check. Protect.</div>
-            <h1>Don't let a convincing message<br><span>rush you into a mistake.</span></h1>
-            <p>Analyze suspicious texts and screenshots for phishing, impersonation, payment requests, and other social-engineering warning signs.</p>
-        </section>
-
-        <section class="workspace" aria-label="Scam message analyzer">
-            <div class="workspace-head">
-                <div>
-                    <p class="section-kicker">MESSAGE ANALYZER</p>
-                    <h2>What did you receive?</h2>
-                </div>
-                <label class="language-control" for="languageSelect">
-                    <span>Translate results</span>
-                    <select id="languageSelect">
-                        <option value="">English</option>
-                        <option value="Hindi">Hindi</option>
-                        <option value="Malayalam">Malayalam</option>
-                        <option value="Tamil">Tamil</option>
-                    </select>
-                </label>
-            </div>
-
-            <div class="input-grid">
-                <div class="message-panel">
-                    <div class="panel-label-row">
-                        <label for="messageInput">Paste the message</label>
-                        <span id="charCount">0 / 8000</span>
-                    </div>
-                    <textarea id="messageInput" maxlength="8000" placeholder="Example: Your bank account will be suspended today. Verify your details immediately at https://..." spellcheck="true"></textarea>
-                    <div class="input-footer">
-                        <span class="privacy-note"><span class="lock-icon">⌑</span> Your message is sent to the configured AI service for analysis.</span>
-                        <button class="text-button" id="clearButton" type="button">Clear</button>
-                    </div>
-                </div>
-
-                <div class="upload-panel" id="dropZone">
-                    <input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
-                    <div class="upload-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><circle cx="8.5" cy="9" r="1.5" stroke="currentColor" stroke-width="1.6"/><path d="m4 17 4.8-4.5 3.4 3 2.4-2.2L20 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </div>
-                    <strong>Scan a screenshot</strong>
-                    <span>Drop an image here or browse from your device.</span>
-                    <button class="secondary-button" id="browseButton" type="button">Choose image</button>
-                    <small>JPG, PNG or WebP · up to 6 MB</small>
-                </div>
-            </div>
-
-            <div class="examples">
-                <span>Try an example:</span>
-                <button type="button" data-example="Your bank account will be suspended today. Confirm your account immediately by sharing the OTP sent to your phone.">Bank alert</button>
-                <button type="button" data-example="Congratulations! You have won a cash reward of ₹50,000. Pay a small processing fee to claim your prize.">Prize message</button>
-                <button type="button" data-example="Hi, your food delivery is delayed by 20 minutes. You can check the updated ETA in the official app.">Legitimate message</button>
-            </div>
-
-            <button class="analyze-button" id="checkButton" type="button">
-                <span class="button-icon">⌁</span>
-                <span>Analyze message</span>
-                <span class="button-arrow">→</span>
-            </button>
-
-            <div class="loading" id="loadingState" hidden style="display: none;">
-                <span class="spinner"></span>
-                <div><strong id="loadingTitle">Analyzing message…</strong><small>Checking language, scam signals, and context.</small></div>
-            </div>
-        </section>
-
-        <section class="result-section" id="resultSection" hidden>
-            <div class="result-header">
-                <div>
-                    <p class="section-kicker">ANALYSIS REPORT</p>
-                    <h2>Safety assessment</h2>
-                </div>
-                <button class="text-button" id="newScanButton" type="button">New scan ↗</button>
-            </div>
-            <div id="result" aria-live="polite"></div>
-        </section>
-
-        <section class="how-it-works">
-            <div class="section-kicker">HOW SCAMEYE WORKS</div>
-            <div class="steps">
-                <article><span>01</span><h3>Extract</h3><p>Read pasted text or extract message content from a screenshot.</p></article>
-                <article><span>02</span><h3>Cross-check</h3><p>Combine transparent scam indicators with contextual AI analysis.</p></article>
-                <article><span>03</span><h3>Explain</h3><p>Show the warning signs and a safer next step in plain language.</p></article>
-            </div>
-        </section>
-
-        <footer>
-            <span>ScamEye is a safety aid, not a guarantee that a message is legitimate.</span>
-            <span>Never share OTPs, passwords, or payment details because a message asks you to.</span>
-        </footer>
-    </main>
-
-    <script src="{{ url_for('static', filename='script.js') }}?v=2"></script>
-</body>
-</html>
+    <section id="appView" hidden>
+      <section class="hero"><div class="eyebrow">✦ Pause. Check. Protect.</div><h1>Check before <span>you trust.</span></h1><p>Analyze suspicious texts and screenshots for phishing, impersonation, payment requests, and other social-engineering warning signs.</p></section>
+      <section class="workspace" aria-label="Scam message analyzer"><div class="workspace-head"><div><p class="section-kicker">MESSAGE ANALYZER</p><h2>What did you receive?</h2></div><label class="language-control" for="languageSelect"><span>Translate results</span><select id="languageSelect"><option value="">English</option><option value="Hindi">Hindi</option><option value="Malayalam">Malayalam</option><option value="Tamil">Tamil</option></select></label></div>
+        <div class="input-grid"><div class="message-panel"><div class="panel-label-row"><label for="messageInput">Paste the message</label><span id="charCount">0 / 8000</span></div><textarea id="messageInput" maxlength="8000" placeholder="Example: Your bank account will be suspended today. Verify your details immediately at https://..." spellcheck="true"></textarea><div class="input-footer"><span class="privacy-note">Your message is sent to the configured AI service and saved to your scan history.</span><button class="text-button" id="clearButton" type="button">Clear</button></div></div>
+        <div class="upload-panel" id="dropZone"><input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp" hidden><div class="upload-icon" aria-hidden="true">▧</div><strong>Scan a screenshot</strong><span>Drop an image here or browse from your device.</span><button class="secondary-button" id="browseButton" type="button">Choose image</button><small>JPG, PNG or WebP · up to 6 MB</small></div></div>
+        <div class="examples"><span>Try an example:</span><button type="button" data-example="Your bank account will be suspended today. Confirm your account immediately by sharing the OTP sent to your phone.">Bank alert</button><button type="button" data-example="Congratulations! You have won a cash reward of ₹50,000. Pay a small processing fee to claim your prize.">Prize message</button><button type="button" data-example="Hi, your food delivery is delayed by 20 minutes. You can check the updated ETA in the official app.">Legitimate message</button></div>
+        <button class="analyze-button" id="checkButton" type="button"><span>Analyze message</span><span class="button-arrow">→</span></button><div class="loading" id="loadingState" hidden><span class="spinner"></span><div><strong id="loadingTitle">Analyzing message…</strong><small>Checking language, scam signals, and context.</small></div></div>
+      </section>
+      <section class="result-section" id="resultSection" hidden><div class="result-header"><div><p class="section-kicker">ANALYSIS REPORT</p><h2>Safety assessment</h2></div><button class="text-button" id="newScanButton" type="button">New scan ↗</button></div><div id="result" aria-live="polite"></div></section>
+      <section class="history-section"><div class="result-header"><div><p class="section-kicker">YOUR ACCOUNT</p><h2>Recent scan history</h2></div><button id="refreshHistoryButton" class="secondary-button" type="button">Refresh</button></div><div id="historyList" class="history-list"><p class="muted">Loading your scans…</p></div></section>
+      <section class="how-it-works"><div class="section-kicker">HOW SCAMEYE WORKS</div><div class="steps"><article><span>01</span><h3>Extract</h3><p>Read pasted text or extract message content from a screenshot.</p></article><article><span>02</span><h3>Cross-check</h3><p>Combine transparent scam indicators with contextual AI analysis.</p></article><article><span>03</span><h3>Explain</h3><p>Show warning signs and a safer next step in plain language.</p></article></div></section>
+    </section>
+    <footer><span>ScamEye is a safety aid, not a guarantee that a message is legitimate.</span><span>Never share OTPs, passwords, or payment details because a message asks you to.</span></footer>
+  </main>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body></html>
